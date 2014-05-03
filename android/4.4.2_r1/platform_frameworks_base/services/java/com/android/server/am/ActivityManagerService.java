@@ -1758,7 +1758,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 app.makeActive(mSystemThread.getApplicationThread(), mSelf.mProcessStats);
                 mSelf.mProcessNames.put(app.processName, app.uid, app);
                 synchronized (mSelf.mPidsSelfLocked) {
-                    mSelf.mPidsSelfLocked.put(app.pid, app);
+                    mSelf.mPidsSelfLocked.put(app.pid, app);        //// add the "system_server" Process Info, with package name "android"
                 }
                 mSelf.updateLruProcessLocked(app, false, null);
                 mSelf.updateOomAdjLocked();
@@ -2814,7 +2814,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             app.usingWrapper = startResult.usingWrapper;
             app.removed = false;
             synchronized (mPidsSelfLocked) {
-                this.mPidsSelfLocked.put(startResult.pid, app);
+                this.mPidsSelfLocked.put(startResult.pid, app); /**** all ProcessRecord with cached at startProcessLocked(), (except system_servce {@link #setSystemProcess()} )*/
                 Message msg = mHandler.obtainMessage(PROC_START_TIMEOUT_MSG);
                 msg.obj = app;
                 mHandler.sendMessageDelayed(msg, startResult.usingWrapper
@@ -4963,7 +4963,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                     + processName + " with config " + mConfiguration);
             ApplicationInfo appInfo = app.instrumentationInfo != null
                     ? app.instrumentationInfo : app.info;
-            app.compat = compatibilityInfoForPackageLocked(appInfo);
+            app.compat = compatibilityInfoForPackageLocked(appInfo); //// create compatibilityInfo from appInfo
             if (profileFd != null) {
                 profileFd = profileFd.dup();
             }

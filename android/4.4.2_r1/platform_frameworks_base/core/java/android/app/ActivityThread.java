@@ -4150,8 +4150,8 @@ public final class ActivityThread {
         mCurDefaultDisplayDpi = data.config.densityDpi;
         applyCompatConfiguration(mCurDefaultDisplayDpi);
 
-        data.info = getPackageInfoNoCheck(data.appInfo, data.compatInfo);
-
+        data.info = getPackageInfoNoCheck(data.appInfo, data.compatInfo);  //// create LoadedApk object in application process
+                                                                           /**** appInfo is create at {@link com.android.server.am.ActivityManagerService#attachApplicationLocked(IApplicationThread, int)}*/
         /**
          * Switch this process to density compatibility mode if needed.
          */
@@ -4162,7 +4162,7 @@ public final class ActivityThread {
         }
         updateDefaultDensity();
 
-        final ContextImpl appContext = new ContextImpl();
+        final ContextImpl appContext = new ContextImpl();  //// Create Application Context
         appContext.init(data.info, null, this);
         if (!Process.isIsolated()) {
             final File cacheDir = appContext.getCacheDir();

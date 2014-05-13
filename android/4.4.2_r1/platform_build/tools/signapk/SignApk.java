@@ -260,7 +260,7 @@ class SignApk {
             byName.put(entry.getName(), entry);
         }
 
-        for (JarEntry entry: byName.values()) {
+        for (JarEntry entry: byName.values()) {  // append each items sha-digest to manifest
             String name = entry.getName();
             if (!entry.isDirectory() &&
                 (stripPattern == null || !stripPattern.matcher(name).matches())) {
@@ -281,8 +281,8 @@ class SignApk {
                     attr.putValue("SHA-256-Digest",
                                   new String(Base64.encode(md_sha256.digest()), "ASCII"));
                 }
-                output.getEntries().put(name, attr);
-            }
+                output.getEntries().put(name, attr); //  Name: file name
+            }                                        //  SHA1-Digest: xxxxxxx
         }
 
         return output;
@@ -369,7 +369,7 @@ class SignApk {
         manifest.write(print);
         print.flush();
         main.putValue(hash == USE_SHA256 ? "SHA-256-Digest-Manifest" : "SHA1-Digest-Manifest",
-                      new String(Base64.encode(md.digest()), "ASCII"));
+                      new String(Base64.encode(md.digest()), "ASCII"));            //add:  SHA1-Digest-Manifest: Digest of the entire manifest
 
         Map<String, Attributes> entries = manifest.getEntries();
         for (Map.Entry<String, Attributes> entry : entries.entrySet()) {
@@ -384,7 +384,7 @@ class SignApk {
             Attributes sfAttr = new Attributes();
             sfAttr.putValue(hash == USE_SHA256 ? "SHA-256-Digest" : "SHA1-Digest-Manifest",
                             new String(Base64.encode(md.digest()), "ASCII"));
-            sf.getEntries().put(entry.getKey(), sfAttr);
+            sf.getEntries().put(entry.getKey(), sfAttr);   // add cascade item digests
         }
 
         CountOutputStream cout = new CountOutputStream(out);
@@ -675,7 +675,7 @@ class SignApk {
         JarEntry je = new JarEntry(JarFile.MANIFEST_NAME);
         je.setTime(timestamp);
         outputJar.putNextEntry(je);
-        manifest.write(outputJar);
+        manifest.write(outputJar);   // first: write the manifest(with all files signature) to jar
 
         int numKeys = publicKey.length;
         for (int k = 0; k < numKeys; ++k) {
@@ -685,9 +685,9 @@ class SignApk {
             je.setTime(timestamp);
             outputJar.putNextEntry(je);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            writeSignatureFile(manifest, baos, getAlgorithm(publicKey[k]));
+            writeSignatureFile(manifest, baos, getAlgorithm(publicKey[k])); // calculate signatures for manifest and all its items
             byte[] signedData = baos.toByteArray();
-            outputJar.write(signedData);
+            outputJar.write(signedData);  // second: write the CERT.SF(contains the manifest's sig and all it's items sig) to jar
 
             // CERT.RSA / CERT#.RSA
             je = new JarEntry(numKeys == 1 ? CERT_RSA_NAME :
@@ -695,7 +695,7 @@ class SignApk {
             je.setTime(timestamp);
             outputJar.putNextEntry(je);
             writeSignatureBlock(new CMSProcessableByteArray(signedData),
-                                publicKey[k], privateKey[k], outputJar);
+                                publicKey[k], privateKey[k], outputJar);      // finally: write sig&cert to jar
         }
     }
 
@@ -778,9 +778,9 @@ class SignApk {
                 // (~0.1% on full OTA packages I tested).
                 outputJar.setLevel(9);
 
-                Manifest manifest = addDigestsToManifest(inputJar, hashes);
-                copyFiles(manifest, inputJar, outputJar, timestamp);
-                signFile(manifest, inputJar, publicKey, privateKey, outputJar);
+                Manifest manifest = addDigestsToManifest(inputJar, hashes);         // add all files (in jar & not dir & not manifest and certs) into manifest with its hash
+                copyFiles(manifest, inputJar, outputJar, timestamp);    // move all files(list in manifest) from input jar to output jar
+                signFile(manifest, inputJar, publicKey, privateKey, outputJar); // sign the apk, and put signature files into apk
                 outputJar.close();
             }
         } catch (Exception e) {

@@ -1,0 +1,126 @@
+# Copyright (C) 2013 The Android Open Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+GERRIT = 'GERRIT:'
+ECLIPSE = 'ECLIPSE:'
+MAVEN_CENTRAL = 'MAVEN_CENTRAL:'
+MAVEN_LOCAL = 'MAVEN_LOCAL:'
+
+def define_license(name):
+  n = 'LICENSE-' + name
+  genrule(
+    name = n,
+    cmd = 'ln -s $SRCS $OUT',
+    srcs = [n],
+    out = n,
+    visibility = ['PUBLIC'],
+  )
+
+def maven_jar(
+    name,
+    id,
+    license,
+    exclude = [],
+    exclude_java_sources = False,
+    unsign = False,
+    deps = [],
+    sha1 = '', bin_sha1 = '', src_sha1 = '',
+    repository = MAVEN_CENTRAL,
+    attach_source = True,
+    export_deps = False,
+    visibility = ['PUBLIC']):
+  from os import path
+
+  parts = id.split(':')
+  if len(parts) != 3:
+    raise NameError('expected id="groupId:artifactId:version"')
+  group, artifact, version = parts
+
+  jar = path.join(name, artifact.lower() + '-' + version)
+  url = '/'.join([
+    repository,
+    group.replace('.', '/'), artifact, version,
+    artifact + '-' + version])
+
+  binjar = jar + '.jar'
+  binurl = url + '.jar'
+
+  srcjar = jar + '-src.jar'
+  srcurl = url + '-sources.jar'
+
+  cmd = ['$(exe //tools:download_file)', '-o', '$OUT', '-u', binurl]
+  if sha1:
+    cmd.extend(['-v', sha1])
+  elif bin_sha1:
+    cmd.extend(['-v', bin_sha1])
+  for x in exclude:
+    cmd.extend(['-x', x])
+  if exclude_java_sources:
+    cmd.append('--exclude_java_sources')
+  if unsign:
+    cmd.append('--unsign')
+
+  genrule(
+    name = name + '__download_bin',
+    cmd = ' '.join(cmd),
+    deps = ['//tools:download_file'],
+    out = binjar,
+  )
+  license = ['//lib:LICENSE-' + license]
+
+  if src_sha1 or attach_source:
+    cmd = ['$(exe //tools:download_file)', '-o', '$OUT', '-u', srcurl]
+    if src_sha1:
+      cmd.extend(['-v', src_sha1])
+    genrule(
+      name = name + '__download_src',
+      cmd = ' '.join(cmd),
+      deps = ['//tools:download_file'],
+      out = srcjar,
+    )
+    prebuilt_jar(
+      name = name + '_src',
+      binary_jar = genfile(srcjar),
+      deps = license + [':' + name + '__download_src'],
+      visibility = visibility,
+    )
+  else:
+    srcjar = None
+    genrule(
+      name = name + '__download_src',
+      cmd = ':>$OUT',
+      out = '__' + name + '__no_src',
+    )
+
+  if export_deps:
+    prebuilt_jar(
+      name = name + '__jar',
+      deps = deps + license + [':' + name + '__download_bin'],
+      binary_jar = genfile(binjar),
+      source_jar = genfile(srcjar) if srcjar else None,
+    )
+    java_library(
+      name = name,
+      deps = [':' + name + '__jar'],
+      export_deps = True,
+      visibility = visibility,
+    )
+  else:
+    prebuilt_jar(
+      name = name,
+      deps = deps + license + [':' + name + '__download_bin'],
+      binary_jar = genfile(binjar),
+      source_jar = genfile(srcjar) if srcjar else None,
+      visibility = visibility,
+    )

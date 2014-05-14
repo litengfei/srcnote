@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2013 The Android Open Source Project
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<ui:UiBinder
+    xmlns:ui='urn:ui:com.google.gwt.uibinder'
+    xmlns:c='urn:import:com.google.gerrit.client.change'
+    xmlns:g='urn:import:com.google.gwt.user.client.ui'
+    xmlns:x='urn:import:com.google.gerrit.client.ui'
+    xmlns:clippy='urn:import:com.google.gwtexpui.clippy.client'>
+  <ui:with field='ico' type='com.google.gerrit.client.GerritResources'/>
+  <ui:with field='res' type='com.google.gerrit.client.change.Resources'/>
+  <ui:style type='com.google.gerrit.client.change.ChangeScreen2.Style'>
+    @eval textColor com.google.gerrit.client.Gerrit.getTheme().textColor;
+    @eval trimColor com.google.gerrit.client.Gerrit.getTheme().trimColor;
+
+    @def INFO_WIDTH 450px;
+    @def HEADER_HEIGHT 29px;
+
+    .cs2 {
+      margin-bottom: 1em;
+    }
+
+    .headerLine {
+      position: relative;
+      background-color: trimColor;
+      height: HEADER_HEIGHT;
+      margin: 0 -5px;
+      padding: 0 5px;
+    }
+
+    .idBlock {
+      position: relative;
+      width: INFO_WIDTH;
+      height: HEADER_HEIGHT;
+      background-color: trimColor;
+      color: textColor;
+      font-family: sans-serif;
+      font-weight: bold;
+    }
+    .star {
+      cursor: pointer;
+      outline: none;
+      position: absolute;
+      left: 5px;
+      top: 5px;
+    }
+    .idLine, .idStatus {
+      line-height: HEADER_HEIGHT;
+    }
+    .idLine {
+      position: absolute;
+      top: 0;
+      left: 29px;
+      width: 245px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .idStatus {
+      position: absolute;
+      top: 0;
+      right: 26px;
+    }
+    .reload {
+      display: block;
+      position: absolute;
+      top: 7px;
+      right: 5px;
+      cursor: pointer;
+    }
+
+    .headerButtons {
+      position: absolute;
+      top: 0;
+      left: INFO_WIDTH;
+      height: HEADER_HEIGHT;
+      padding-left: 5px;
+    }
+
+    .popdown {
+      position: absolute;
+      top: 2px;
+      right: 0;
+    }
+    .popdown button {
+      cursor: pointer;
+      height: 25px;
+      border: none;
+      border-left: 2px solid #fff;
+      background-color: trimColor;
+      margin: 0;
+      padding-left: 2px;
+      padding-right: 2px;
+      min-width: 100px;
+    }
+    .popdown button div {
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+    .popdown button div:after {
+      content: " \25bc";
+    }
+    .popdown button.selected {
+      font-weight: bold;
+    }
+    .headerLine button:disabled,
+    .headerTable button:disabled,
+    .popdown button:disabled {
+      background-color: #999;
+      background-image: -webkit-linear-gradient(top, #999, #999);
+    }
+
+    .headerTable {
+      border-spacing: 0;
+    }
+
+    .headerTable th {
+      width: 60px;
+      color: #444;
+      font-weight: normal;
+      vertical-align: top;
+      text-align: left;
+      padding: 0 5px 0 0;
+    }
+
+    .clippy div {
+      float: right;
+    }
+
+    .queryProject {
+      float: left;
+      cursor: pointer;
+    }
+
+    .infoColumn {
+      width: 440px;
+      padding-right: 10px;
+      vertical-align: top;
+    }
+
+    #change_infoTable {
+      border-spacing: 0;
+      width: 100%;
+      margin-left: 2px;
+      margin-right: 5px;
+    }
+
+    .notMergeable {
+      float: right;
+      font-weight: bold;
+      color: red;
+    }
+
+    .commitColumn, .related {
+      padding: 0;
+      vertical-align: top;
+    }
+    .commitColumn {
+      width: 600px;
+    }
+
+    .labels {
+      border-spacing: 0;
+      padding: 0;
+    }
+    .labelName {
+      color: #444;
+      vertical-align: top;
+      text-align: left;
+      padding-top: 3px;
+      padding-right: 5px;
+      white-space: nowrap;
+    }
+
+    .label_user {
+      display: inline-block;
+      margin-bottom: 2px;
+      padding: 1px 3px 0px 3px;
+      border-radius: 5px;
+      -webkit-border-radius: 5px;
+      background: trimColor;
+      border: 1px solid trimColor;
+      white-space: nowrap;
+    }
+    .label_user img.avatar {
+      margin: 0 2px 0 0;
+      width: 16px;
+      height: 16px;
+      vertical-align: bottom;
+    }
+    .label_user button {
+      cursor: pointer;
+      padding: 0;
+      margin: 0 0 0 5px;
+      border: 0;
+      background-color: transparent;
+      white-space: nowrap;
+    }
+
+    .label_ok {color: #060;}
+    .label_reject {color: #d14836;}
+    .label_need {color: #000;}
+    .label_may {color: #777;}
+
+    .headerButtons button {
+      margin: 6px 3px 0 0;
+      border-color: rgba(0, 0, 0, 0.1);
+      text-align: center;
+      font-size: 8pt;
+      font-weight: bold;
+      border: 1px solid;
+      cursor: pointer;
+      color: #444;
+      background-color: #f5f5f5;
+      background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+      -webkit-border-radius: 2px;
+      -webkit-box-sizing: content-box;
+    }
+    .headerButtons button div {
+      color: #444;
+      height: 10px;
+      min-width: 54px;
+      line-height: 10px;
+      white-space: nowrap;
+    }
+    button.quickApprove {
+      background-color: #4d90fe;
+      background-image: -webkit-linear-gradient(top, #4d90fe, #4d90fe);
+    }
+    button.quickApprove div { color: #fff; }
+
+    .sectionHeader {
+      position: relative;
+      background-color: trimColor;
+      font-weight: bold;
+      color: textColor;
+      height: 18px;
+      margin: 0 -5px;
+      padding: 5px 5px;
+    }
+    .sectionHeader .headerButtons {
+      top: 2px;
+      height: 18px;
+      line-height: 18px;
+      border-left: 1px inset #fff;
+      padding-top: 3px;
+      padding-bottom: 3px;
+    }
+    .sectionHeader button { margin-top: 0; }
+
+    .diffBase {
+      display: inline-block;
+      height: 18px;
+      line-height: 18px;
+      font-size: smaller;
+      font-weight: normal;
+      vertical-align: top;
+    }
+    .diffBase select {
+      margin: 0;
+      border: 1px solid #bbb;
+      font-size: smaller;
+    }
+
+    .replyBox {
+      background-color: trimColor;
+    }
+  </ui:style>
+
+  <g:HTMLPanel styleName='{style.cs2}'>
+    <g:HTMLPanel styleName='{style.headerLine}' ui:field='headerLine'>
+      <div class='{style.idBlock}'>
+        <c:StarIcon ui:field='star' styleName='{style.star}'/>
+        <div class='{style.idLine}'>
+          <ui:msg>Change <span ui:field='changeIdText'/> by <span ui:field='ownerText'/></ui:msg>
+        </div>
+        <div ui:field='statusText' class='{style.idStatus}'/>
+        <a ui:field='permalink' class='{style.reload}'>
+          <c:Reload ui:field='reload'
+              title='Reload the change (Shortcut: R)'>
+            <ui:attribute name='title'/>
+          </c:Reload>
+        </a>
+      </div>
+      <div class='{style.headerButtons}'>
+        <g:Button ui:field='reply'
+            styleName=''
+            title='Reply and score (Shortcut: a)'>
+          <ui:attribute name='title'/>
+          <div><ui:msg>Reply&#8230;</ui:msg></div>
+        </g:Button>
+        <c:QuickApprove ui:field='quickApprove'
+            styleName='{style.quickApprove}'
+            title='Apply score with one click'>
+          <ui:attribute name='title'/>
+        </c:QuickApprove>
+        <g:Button ui:field='editMessage'
+            styleName=''
+            visible='false'
+            title='Edit commit message (Shortcut: e)'>
+          <ui:attribute name='title'/>
+          <div><ui:msg>Edit Message</ui:msg></div>
+        </g:Button>
+      </div>
+
+      <g:FlowPanel styleName='{style.popdown}'>
+        <g:Button ui:field='includedIn' styleName='' visible="false">
+          <div><ui:msg>Included in</ui:msg></div>
+        </g:Button>
+        <g:Button ui:field='revisions' styleName=''>
+          <div><ui:msg>Revisions</ui:msg></div>
+        </g:Button>
+        <g:Button ui:field='download' styleName=''>
+          <div><ui:msg>Download</ui:msg></div>
+        </g:Button>
+      </g:FlowPanel>
+    </g:HTMLPanel>
+
+    <table class='{style.headerTable}'>
+      <tr>
+        <td class='{style.infoColumn}'>
+          <table id='change_infoTable'>
+            <tr>
+              <th><ui:msg>Reviewers</ui:msg></th>
+              <td ui:field='reviewersText'/>
+            </tr>
+            <tr>
+              <th><ui:msg>CC</ui:msg></th>
+              <td>
+                <c:Reviewers ui:field='reviewers'/>
+              </td>
+            </tr>
+            <tr>
+              <th><ui:msg>Project</ui:msg></th>
+              <td><g:Image
+                     ui:field='projectQuery'
+                     resource='{ico.queryIcon}'
+                     styleName='{style.queryProject}'
+                     title='Search for changes on this project'>
+                    <ui:attribute name='title'/>
+                  </g:Image>
+                  <x:InlineHyperlink ui:field='projectLink'
+                     title='Go to project'>
+                     <ui:attribute name='title'/>
+                  </x:InlineHyperlink>
+              </td>
+            </tr>
+            <tr>
+              <th><ui:msg>Branch</ui:msg></th>
+              <td><x:InlineHyperlink ui:field='branchLink'
+                     title='Search for changes on this branch'>
+                     <ui:attribute name='title'/>
+                  </x:InlineHyperlink>
+              </td>
+            </tr>
+            <tr>
+              <th><ui:msg>Strategy</ui:msg></th>
+              <td>
+                <span ui:field='submitActionText'/>
+                <div ui:field='notMergeable'
+                     class='{style.notMergeable}'
+                     style='display: none'
+                     aria-hidden='true'>
+                  <ui:msg>Cannot Merge</ui:msg>
+                </div>
+              </td>
+            </tr>
+            <tr><td colspan='2'><c:Actions ui:field='actions'/></td></tr>
+            <tr>
+              <th ui:field='actionText'/>
+              <td ui:field='actionDate'/>
+            </tr>
+            <tr>
+              <th><ui:msg>Change-Id</ui:msg></th>
+              <td><clippy:CopyableLabel styleName='{style.clippy}' ui:field='idText'/></td>
+            </tr>
+            <tr>
+              <th><ui:msg>Topic</ui:msg></th>
+              <td><c:Topic ui:field='topic'/></td>
+            </tr>
+          </table>
+          <hr/>
+          <c:Labels ui:field='labels' styleName='{style.labels}'/>
+        </td>
+
+        <td class='{style.commitColumn}'>
+          <c:CommitBox ui:field='commit'/>
+        </td>
+
+        <td class='{style.related}'>
+          <c:RelatedChanges ui:field='related'/>
+        </td>
+      </tr>
+    </table>
+
+    <div class='{style.sectionHeader}'>
+      <ui:msg>Files</ui:msg>
+      <div class='{style.headerButtons}'>
+        <div class='{style.diffBase}'>
+          <ui:msg>Diff against: <g:ListBox ui:field='diffBase' styleName=''/></ui:msg>
+        </div>
+      </div>
+    </div>
+    <c:FileTable ui:field='files'/>
+
+    <div class='{style.sectionHeader}'>
+      <ui:msg>History</ui:msg>
+      <div class='{style.headerButtons}'>
+        <g:Button ui:field='expandAll'
+            styleName=''
+            title='Expand all messages in the change history'>
+          <ui:attribute name='title'/>
+          <div><ui:msg>Expand All</ui:msg></div>
+        </g:Button>
+        <g:Button ui:field='collapseAll'
+            styleName=''
+            visible='false'
+            title='Collapse all messages in the change history'>
+          <ui:attribute name='title'/>
+          <div><ui:msg>Collapse All</ui:msg></div>
+        </g:Button>
+      </div>
+    </div>
+    <c:History ui:field='history'/>
+  </g:HTMLPanel>
+</ui:UiBinder>

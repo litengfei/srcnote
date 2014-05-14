@@ -1,0 +1,17 @@
+/.classpath
+/.project
+/.settings/org.maven.ide.eclipse.prefs
+/.settings/org.eclipse.m2e.core.prefs
+/.settings/org.eclipse.ltk.core.refactoring.prefs
+/test_site
+/.idea
+/gerrit-parent.iml
+*.sublime-*
+/gerrit-package-plugins
+/.buckconfig.local
+/.buckd
+/buck-cache
+/buck-out
+/local.properties
+*.pyc
+/gwt-unitCache

@@ -204,7 +204,7 @@ import static libcore.io.OsConstants.*;
      * the given array.
      */
     private static Element[] makeDexElements(ArrayList<File> files, File optimizedDirectory,
-                                             ArrayList<IOException> suppressedExceptions) {
+                                             ArrayList<IOException> suppressedExceptions) { // the last parameter is appeared form api level 17
         ArrayList<Element> elements = new ArrayList<Element>();
         /*
          * Open all files and load the (direct or contained) dex files

@@ -27,8 +27,8 @@ import java.util.List;
  * {@link ClassLoader} implementations.
  */
 public class BaseDexClassLoader extends ClassLoader {
-    private final DexPathList pathList;
-
+    private final DexPathList pathList; // this changed to "path" at commit f904678355f850a647f22e2689a836f895974fdf, and change back to "pathList" at commit 0cfd9bcaa70317a8c400c39b25ad42ba05c7531a by Elliott Hughes on Jan 16, 2013
+    //originalPath was removed by  Elliott Hughes on Dec 4, 2012, commit f904678355f850a647f22e2689a836f895974fdf
     /**
      * Constructs an instance.
      *

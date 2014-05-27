@@ -14,6 +14,197 @@
  * limitations under the License.
  */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 package android.app;
 
 import android.os.Build;
@@ -590,7 +781,7 @@ class ContextImpl extends Context {
     }
 
     static ContextImpl getImpl(Context context) {
-        Context nextContext;
+/*784*/ Context nextContext;
         while ((context instanceof ContextWrapper) &&
                 (nextContext=((ContextWrapper)context).getBaseContext()) != null) {
             context = nextContext;
@@ -2001,7 +2192,7 @@ class ContextImpl extends Context {
     }
 
     final void init(LoadedApk packageInfo, IBinder activityToken, ActivityThread mainThread) {
-        init(packageInfo, activityToken, mainThread, null, null, Process.myUserHandle());
+/*2257*/  init(packageInfo, activityToken, mainThread, null, null, Process.myUserHandle());
     }
 
     final void init(LoadedApk packageInfo, IBinder activityToken, ActivityThread mainThread,

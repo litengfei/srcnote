@@ -14,6 +14,33 @@
  * limitations under the License.
  */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 package android.app;
 
 import android.util.ArrayMap;
@@ -499,14 +526,14 @@ public final class LoadedApk {
 
         Application app = null;
 
-        String appClass = mApplicationInfo.className;
+/*529*/ String appClass = mApplicationInfo.className;
         if (forceDefaultAppClass || (appClass == null)) {
             appClass = "android.app.Application";
         }
 
         try {
             java.lang.ClassLoader cl = getClassLoader();
-            ContextImpl appContext = new ContextImpl();
+/*536*/     ContextImpl appContext = new ContextImpl();
             appContext.init(this, null, mActivityThread);
             app = mActivityThread.mInstrumentation.newApplication(
                     cl, appClass, appContext);

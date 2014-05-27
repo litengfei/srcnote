@@ -679,7 +679,7 @@ public class Activity extends ContextThemeWrapper
     /*package*/ Intent mIntent;
     private ComponentName mComponent;
     /*package*/ ActivityInfo mActivityInfo;
-    /*package*/ ActivityThread mMainThread;
+    /*package*/ ActivityThread  mMainThread;
     Activity mParent;
     boolean mCalled;
     boolean mCheckedForLoaderManager;

@@ -26,6 +26,15 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+
+
+
+
+
+
+
+
+
 /**
  * Base class for those who need to maintain global application state. You can
  * provide your own implementation by specifying its name in your
@@ -178,7 +187,7 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
      * @hide
      */
     /* package */ final void attach(Context context) {
-        attachBaseContext(context);
+/*190*/ attachBaseContext(context);
         mLoadedApk = ContextImpl.getImpl(context).mPackageInfo;
     }
 

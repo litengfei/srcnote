@@ -49,6 +49,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
+
+
+
+
 /**
  * Base class for implementing application instrumentation code.  When running
  * with instrumentation turned on, this class will be instantiated for you
@@ -972,7 +979,7 @@ public class Instrumentation {
     public Application newApplication(ClassLoader cl, String className, Context context)
             throws InstantiationException, IllegalAccessException, 
             ClassNotFoundException {
-        return newApplication(cl.loadClass(className), context);
+/*982*/ return newApplication(cl.loadClass(className), context);
     }
     
     /**
@@ -987,7 +994,7 @@ public class Instrumentation {
     static public Application newApplication(Class<?> clazz, Context context)
             throws InstantiationException, IllegalAccessException, 
             ClassNotFoundException {
-        Application app = (Application)clazz.newInstance();
+/*997*/     Application app = (Application)clazz.newInstance();
         app.attach(context);
         return app;
     }

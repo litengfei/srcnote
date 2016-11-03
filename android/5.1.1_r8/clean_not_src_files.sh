@@ -10,6 +10,28 @@ rm -rf platform_frameworks_base/preloaded-classes
 rm -rf platform_frameworks_base/samples
 rm -rf platform_frameworks_base/packages/SystemUI/res
 rm -rf platform_frameworks_base/api
+rm -rf platform_external_skia/expectations
+rm -rf platform_external_skia/experimental
+rm -rf platform_external_skia/platform_tools
+rm -rf platform_external_skia/resources
+rm -rf platform_external_skia/tests
+rm -rf platform_external_skia/docs
+rm -rf platform_external_skia/debugger
+rm -rf platform_external_skia/bench
+rm -rf platform_external_skia/tools
+rm -rf platform_external_skia/gyp*
+rm -rf platform_external_skia/A*
+rm -rf platform_external_skia/C*
+rm -rf platform_external_skia/D*
+rm -rf platform_external_skia/L*
+rm -rf platform_external_skia/O*
+rm -rf platform_external_skia/R*
+rm -rf platform_external_skia/samplecode
+rm -rf platform_external_skia/Makefile
+rm -rf platform_external_skia/SKP_VERSION
+rm -rf platform_external_skia/codereview.settings
+rm -rf platform_external_skia/make.*
+rm -rf platform_external_skia/skia.gyp
 
 #####find . -type d -name docs -exec du -h -d 0 {} \;
 find . -type d -name res -exec rm -rf {} \;

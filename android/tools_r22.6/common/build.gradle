@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'distrib'
+
+dependencies {
+    compile 'com.google.guava:guava:15.0'
+
+    testCompile 'junit:junit:3.8.1'
+}
+
+group = 'com.android.tools'
+archivesBaseName = 'common'
+project.ext.pomName = 'Android Tools common library'
+project.ext.pomDesc = 'common library used by other Android tools libraries.'
+
+jar {
+    from 'NOTICE'
+}
+
+apply from: '../baseVersion.gradle'
+apply from: '../publish.gradle'
+apply from: '../javadoc.gradle'
